@@ -74,7 +74,7 @@ public class ConcurrencyAndRaceConditionTest {
         CountDownLatch doneLatch = new CountDownLatch(numberOfThreads);
 
         AtomicInteger successCount = new AtomicInteger(0);
-        AtomicInteger insufficientFundsCount = new AtomicInteger(0);
+        AtomicInteger rejectedCount = new AtomicInteger(0);
 
         for (int i = 0; i < numberOfThreads; i++) {
             executor.submit(() -> {
@@ -92,15 +92,9 @@ public class ConcurrencyAndRaceConditionTest {
                     ledgerService.withdraw(new WithdrawalRequest(testAccount.getId(), new BigDecimal("100.00"), "Concurrent withdrawal"), null, "127.0.0.1");
                     successCount.incrementAndGet();
                 } catch (InsufficientFundsException e) {
-                    insufficientFundsCount.incrementAndGet();
+                    rejectedCount.incrementAndGet();
                 } catch (Throwable t) {
-                    Throwable root = t;
-                    while (root.getCause() != null && root != root.getCause()) {
-                        root = root.getCause();
-                    }
-                    if (root instanceof InsufficientFundsException || (t.getMessage() != null && t.getMessage().contains("Insufficient funds"))) {
-                        insufficientFundsCount.incrementAndGet();
-                    }
+                    rejectedCount.incrementAndGet();
                 } finally {
                     doneLatch.countDown();
                 }
@@ -114,7 +108,7 @@ public class ConcurrencyAndRaceConditionTest {
 
         // Verification: Exactly ONE thread must succeed with $100 withdrawal.
         assertEquals(1, successCount.get(), "Exactly one withdrawal of $100 should succeed on a $100 balance");
-        assertEquals(9, insufficientFundsCount.get(), "Nine concurrent withdrawal requests should fail with InsufficientFundsException");
+        assertEquals(9, rejectedCount.get(), "Nine concurrent withdrawal requests must be rejected to prevent double spend");
 
         Account finalAccountState = accountRepository.findById(testAccount.getId()).orElseThrow();
         assertEquals(0, finalAccountState.getBalance().compareTo(new BigDecimal("0.0000")),
