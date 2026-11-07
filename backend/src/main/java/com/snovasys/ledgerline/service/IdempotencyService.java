@@ -31,7 +31,7 @@ public class IdempotencyService {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(json.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(hashBytes);
-        } catch (NoSuchAlgorithmException | Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error computing request payload hash", e);
         }
     }
