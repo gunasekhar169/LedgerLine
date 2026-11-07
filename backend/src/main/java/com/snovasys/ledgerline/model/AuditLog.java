@@ -23,7 +23,6 @@ public class AuditLog {
     @Column(nullable = false, length = 30)
     private String status;
 
-    @Lob
     @Column(name = "details", columnDefinition = "TEXT")
     private String details;
 

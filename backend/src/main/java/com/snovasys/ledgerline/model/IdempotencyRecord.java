@@ -25,7 +25,6 @@ public class IdempotencyRecord {
     @Column(name = "response_status", nullable = false)
     private int responseStatus;
 
-    @Lob
     @Column(name = "response_body", nullable = false, columnDefinition = "TEXT")
     private String responseBody;
 
