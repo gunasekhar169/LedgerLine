@@ -19,9 +19,9 @@ public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long
 
     List<JournalEntry> findAllByOrderByCreatedAtAsc();
 
-    @Query("SELECT COALESCE(SUM(j.amount), 0) FROM JournalEntry j WHERE j.entryType = :entryType")
+    @Query("SELECT SUM(j.amount) FROM JournalEntry j WHERE j.entryType = :entryType")
     BigDecimal sumAmountByEntryType(@Param("entryType") EntryType entryType);
 
-    @Query("SELECT COALESCE(SUM(CASE WHEN j.entryType = 'CREDIT' THEN j.amount ELSE -j.amount END), 0) FROM JournalEntry j WHERE j.account.id = :accountId")
+    @Query("SELECT SUM(CASE WHEN j.entryType = com.snovasys.ledgerline.model.EntryType.CREDIT THEN j.amount ELSE -j.amount END) FROM JournalEntry j WHERE j.account.id = :accountId")
     BigDecimal calculateNetBalanceForAccount(@Param("accountId") Long accountId);
 }

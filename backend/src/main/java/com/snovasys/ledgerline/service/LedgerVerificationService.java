@@ -41,8 +41,12 @@ public class LedgerVerificationService {
      */
     @Transactional(readOnly = true)
     public LedgerProofResponse verifySystemLedger(String auditorUsername) {
-        BigDecimal totalDebits = journalEntryRepository.sumAmountByEntryType(EntryType.DEBIT).setScale(4);
-        BigDecimal totalCredits = journalEntryRepository.sumAmountByEntryType(EntryType.CREDIT).setScale(4);
+        BigDecimal rawDebits = journalEntryRepository.sumAmountByEntryType(EntryType.DEBIT);
+        BigDecimal totalDebits = (rawDebits != null ? rawDebits : BigDecimal.ZERO).setScale(4);
+
+        BigDecimal rawCredits = journalEntryRepository.sumAmountByEntryType(EntryType.CREDIT);
+        BigDecimal totalCredits = (rawCredits != null ? rawCredits : BigDecimal.ZERO).setScale(4);
+
         BigDecimal discrepancy = totalDebits.subtract(totalCredits).abs();
 
         boolean globalBalanceValid = (discrepancy.compareTo(new BigDecimal("0.0000")) == 0);
@@ -59,7 +63,8 @@ public class LedgerVerificationService {
                 userBalanceSum = userBalanceSum.add(account.getBalance()).setScale(4);
             }
 
-            BigDecimal netFromLedger = journalEntryRepository.calculateNetBalanceForAccount(account.getId()).setScale(4);
+            BigDecimal rawNet = journalEntryRepository.calculateNetBalanceForAccount(account.getId());
+            BigDecimal netFromLedger = (rawNet != null ? rawNet : BigDecimal.ZERO).setScale(4);
             // In double-entry: for user accounts, net = credits - debits
             if (account.getAccountType() != AccountType.SYSTEM_VAULT) {
                 if (account.getBalance().compareTo(netFromLedger) != 0) {
