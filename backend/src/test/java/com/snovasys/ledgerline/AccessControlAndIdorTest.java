@@ -49,8 +49,9 @@ public class AccessControlAndIdorTest {
         bob = userRepository.findByUsername("bob").orElseGet(() ->
                 userRepository.save(new User("bob", "bob@example.com", "hash", "Bob", Role.ROLE_ACCOUNT_HOLDER)));
 
-        aliceAccount = accountRepository.save(new Account("IDOR-ALICE-01", alice, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
-        bobAccount = accountRepository.save(new Account("IDOR-BOB-01", bob, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        aliceAccount = accountRepository.save(new Account("IDOR-ALICE-" + suffix, alice, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        bobAccount = accountRepository.save(new Account("IDOR-BOB-" + suffix, bob, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
 
         // Authenticate as Alice to fund her account
         setAuth("alice");

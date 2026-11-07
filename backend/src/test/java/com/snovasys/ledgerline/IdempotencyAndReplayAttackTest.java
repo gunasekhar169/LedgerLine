@@ -61,8 +61,9 @@ public class IdempotencyAndReplayAttackTest {
                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
         );
 
-        sourceAccount = accountRepository.save(new Account("IDEM-SRC-001", alice, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
-        destAccount = accountRepository.save(new Account("IDEM-DST-001", alice, AccountType.USER_SAVINGS, BigDecimal.ZERO, "USD"));
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        sourceAccount = accountRepository.save(new Account("IDEM-SRC-" + suffix, alice, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        destAccount = accountRepository.save(new Account("IDEM-DST-" + suffix, alice, AccountType.USER_SAVINGS, BigDecimal.ZERO, "USD"));
 
         ledgerService.deposit(new DepositRequest(sourceAccount.getId(), new BigDecimal("200.00"), "Deposit seed"), null, "127.0.0.1");
     }

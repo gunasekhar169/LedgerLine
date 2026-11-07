@@ -55,8 +55,9 @@ public class BiDirectionalTransferDeadlockTest {
                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
         );
 
-        accountA = accountRepository.save(new Account("DEADLOCK-TEST-A", adminUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
-        accountB = accountRepository.save(new Account("DEADLOCK-TEST-B", adminUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        accountA = accountRepository.save(new Account("DEADLOCK-A-" + suffix, adminUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        accountB = accountRepository.save(new Account("DEADLOCK-B-" + suffix, adminUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
 
         ledgerService.deposit(new DepositRequest(accountA.getId(), new BigDecimal("500.00"), "Deposit A"), null, "127.0.0.1");
         ledgerService.deposit(new DepositRequest(accountB.getId(), new BigDecimal("500.00"), "Deposit B"), null, "127.0.0.1");

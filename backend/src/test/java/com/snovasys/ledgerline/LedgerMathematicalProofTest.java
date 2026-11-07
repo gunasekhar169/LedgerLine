@@ -58,8 +58,9 @@ public class LedgerMathematicalProofTest {
                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
         );
 
-        acc1 = accountRepository.save(new Account("PROOF-ACC-01", admin, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
-        acc2 = accountRepository.save(new Account("PROOF-ACC-02", admin, AccountType.USER_SAVINGS, BigDecimal.ZERO, "USD"));
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        acc1 = accountRepository.save(new Account("PROOF-ACC-01-" + suffix, admin, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        acc2 = accountRepository.save(new Account("PROOF-ACC-02-" + suffix, admin, AccountType.USER_SAVINGS, BigDecimal.ZERO, "USD"));
     }
 
     @Test

@@ -56,7 +56,8 @@ public class ConcurrencyAndRaceConditionTest {
                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
         );
 
-        testAccount = new Account("TEST-CONCURRENCY-001", testUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD");
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        testAccount = new Account("TEST-CONC-" + suffix, testUser, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD");
         testAccount = accountRepository.save(testAccount);
 
         // Deposit exactly $100.00
@@ -92,8 +93,14 @@ public class ConcurrencyAndRaceConditionTest {
                     successCount.incrementAndGet();
                 } catch (InsufficientFundsException e) {
                     insufficientFundsCount.incrementAndGet();
-                } catch (Exception e) {
-                    // unexpected error
+                } catch (Throwable t) {
+                    Throwable root = t;
+                    while (root.getCause() != null && root != root.getCause()) {
+                        root = root.getCause();
+                    }
+                    if (root instanceof InsufficientFundsException || (t.getMessage() != null && t.getMessage().contains("Insufficient funds"))) {
+                        insufficientFundsCount.incrementAndGet();
+                    }
                 } finally {
                     doneLatch.countDown();
                 }

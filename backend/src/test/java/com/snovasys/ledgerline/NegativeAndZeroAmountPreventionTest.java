@@ -50,7 +50,8 @@ public class NegativeAndZeroAmountPreventionTest {
                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities())
         );
 
-        account = accountRepository.save(new Account("ZERO-TEST-ACC", admin, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        account = accountRepository.save(new Account("ZERO-ACC-" + suffix, admin, AccountType.USER_CHECKING, BigDecimal.ZERO, "USD"));
     }
 
     @Test

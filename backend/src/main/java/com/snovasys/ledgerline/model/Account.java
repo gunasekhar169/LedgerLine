@@ -36,9 +36,6 @@ public class Account {
     @Column(nullable = false, length = 20)
     private AccountStatus status = AccountStatus.ACTIVE;
 
-    @Version
-    private Long version;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -131,14 +128,6 @@ public class Account {
 
     public void setStatus(AccountStatus status) {
         this.status = status;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
     public LocalDateTime getCreatedAt() {
