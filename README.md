@@ -5,6 +5,14 @@
 
 ---
 
+## 🌐 Live Cloud Deployment Links
+- **Live Frontend Application:** [https://ledger-line-eta.vercel.app/](https://ledger-line-eta.vercel.app/)
+- **Live Backend API (Render):** [https://ledgerline-backend-wgun.onrender.com](https://ledgerline-backend-wgun.onrender.com)
+- **Live Interactive Swagger Docs:** [https://ledgerline-backend-wgun.onrender.com/swagger-ui/index.html](https://ledgerline-backend-wgun.onrender.com/swagger-ui/index.html)
+- **Health Check Endpoint:** [https://ledgerline-backend-wgun.onrender.com/api/health](https://ledgerline-backend-wgun.onrender.com/api/health)
+
+---
+
 ## Architecture & System Design
 
 LedgerLine is an enterprise-grade financial ledger engineered to eliminate unsafe money movement in distributed environments. It addresses race conditions, duplicate payments, unauthorized debits, and ledger discrepancies through strict mathematical invariants and database-level concurrency controls.
